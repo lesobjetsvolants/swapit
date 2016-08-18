@@ -1,0 +1,386 @@
+﻿<!DOCTYPE html> 
+<html>
+<head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8">
+<link rel="stylesheet" type="text/css" href="style.css">
+<link rel="icon" type="image/png" href="../img/favicon.png">
+<script src="metronome.js"></script>
+<script src="lang.js"></script>
+<script src="cookie.js"></script>
+<script src="datastructure.js"></script>
+<script src="include.js"></script>
+<script src="validate.js"></script>
+<script src="parse.js"></script>
+<title>Swapit</title>
+<link href="../img/cercles-objets.jpg" rel="image_src">
+</head>
+<body onload="getcookie();
+							document.getElementById('inputsiteswap')
+											 .innerHTML=QueryString();
+							document.getElementById('inputsiteswap')
+											 .focus();
+							caret.blink();
+							pre_parse()"
+  		onbeforeunload="setcookie()">
+
+<header>
+<table class="titre">
+<tr>
+<td	class="titre_gauche">
+<h1>
+Swapit
+</h1>
+<span class="modifdate">
+Siteswap parser & validator version 2016.08.09
+</span>
+</td>
+<td class="rubriques_droite">
+<button value="metronome" id="metronome_box" class="metronome_box" 
+	 onclick="metronome.start()">
+metronome
+</button>
+<span id="beat_count"></span>
+<input type="text" id="tempo" class="tempo" value="120" onchange="metronome.tempo(this.value)">lpm
+<button onclick="localtext.change_lang('fr')">français</button>
+<button onclick="localtext.change_lang('eng')">english</button>
+<button onclick="display('help')">help</button>
+<button onclick="display('credits')">credits</button>
+</td>
+</tr>
+</table>
+</header>
+<table class="inputanddebug">
+<thead>
+<td>
+<h3>Input</h3>
+</td>
+<td>
+<h3>Debug</h3>
+</td>
+</thead>
+<tr>
+<td class="leftpane">
+<div class="inputcontainer">
+<textarea class="inputsiteswap" id="inputsiteswap" onkeyup="pre_parse(event)" onclick="pre_parse(event)" onscroll="highlight_scroll()" spellcheck="false">
+</textarea>
+</div>
+<div class="highlight" id="highlight">
+</div>
+</td>
+<td>
+<div class="debug" id="debug"></div>
+</td>
+</tr>
+<tr>
+<td><h3>Animator</h3></td>
+<td><h3>Generator</h3></td>
+</tr>
+<tr>
+<td>
+<div class="animator" id="animator">
+		<script src="three.min.js"></script>
+		<script src="animator.js"></script>
+</div>
+</td>
+<td>
+<div class="generator"id="generator">
+Nombre d'objets<br>
+Nombre de jongleurs<br>
+Période<br>
+Hauteur max<br>
+<br></div>
+</td>
+</tr>
+<tr>
+<td><h3>
+Library</h3>
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td>
+<select>
+<option>test <33p31|3133p></option>
+</select>
+</td>
+<td>
+</td>
+</tr>
+</table>
+<br>
+<br>
+
+<!-- <div class="test">
+
+<button onclick="document.getElementById('debug').innerHTML=dump(score);">dump</button>
+<audio id="mp3player" controls>
+<source src="Nintendude-exciting_minigame.mp3" type="audio/mpeg">
+</audio>
+ -->
+
+<article class="popup" id="help-fr" onclick="hide(this.id)">
+<h2>Mode d'emploi</h2>
+<br>
+<br>
+<h3>Grammaire du "French Siteswap"</h3>
+<br>
+<br>
+Une partition de siteswap est composée d'une phrase unique ou bien d'une liste de phrases.<br>
+<br>
+Chaque phrase d'une liste est placée entre < et >.<br>
+<br>
+Une phrase peut être une phrase solo ou une phrase de groupe (pour plusieurs jongleurs).<br>
+<br>
+Une phrase de groupe est une liste de phrases solo séparées par | . Dans une phrase de groupe, chaque phrase solo doit avoir la même longueur. La longueur est déterminée par la première phrase solo.
+<br>
+<br>
+Une phrase solo est une liste de lancers.<br>
+<br>
+Un lancer peut être unilatéral (une seule main à la fois) ou synchro (deux lancers unilatéraux en même temps, un à gauche et un à droite).<br>
+<br>
+Un lancer unilatéral peut être simple (un seul objet) ou multiplex (plusieurs objets).<br>
+<br>
+Un lancer synchro est composé de deux lancers unilatéraux, entre parenthèses et séparés par une virgule. (attention : par lancer synchro, il est entendu plutôt lancer MHN, c'est-à-dire qu'un lancer synchro prend un seul temps, contrairement au siteswap synchro classique où les lancers prennent deux temps).<br>
+<br>
+Un lancer multiplex est une liste de lancers simples entre crochets, pouvant être suivie d'une extension qui affecte tous les lancers simples à l'intérieur du multiplex.<br>
+<br>
+Un lancer simple est composé d'une "hauteur" pouvant être suivie d'une extension.<br>
+<br>
+Une hauteur est un nombre représenté par un chiffre (de 0 à 9) ou par une lettre majuscule (de A à Z) pour les nombres supérieurs à 9 (A=10, B=11 etc). Dans un lancer synchro, un 0 peut être remplacé par un - (dwell) pour signifier que la main vient de rattraper un objet.<br>
+<br>
+Une extension est composée d'une ou plusieurs extensions élémentaires:<br>
+<blockquote>
+- x (cross) pour l'inverseur de destination<br>
+- b (bounce)<br>
+- t (throw) (seulement pour le 2)<br>
+- f (floor)<br>
+- r (roll)<br>
+- h (hit)<br>
+- c (contact)<br>
+- i (inside)
+- o (outside)
+- p (pass) pour passe au prochain jongleur <br>
+- q pour une passe au jongleur précédent<br>
+- : suivi du numéro de jongleur pour une passe au jongleur concerné (à venir dans les prochaines versions)<br>
+- une expression de bodyzone : un nombre pair d'éléments à choisir parmi ac, al, opac, opal, bol.<br>
+- une position de lancer (à venir dans les prochaines versions)<br>
+- une position d'attrape (à venir dans les prochaines versions)<br>
+- une position et une orientation du jongleur sur scène (à venir dans les prochaines versions)
+</blockquote>
+<br>
+Une partition commence par la main droite, sauf si elle commence par un lancer synchro. (Startleft à venir dans les prochaines versions)<br>
+Un 1x suivi par un lancer unilatéral implique que celui-ci est du côté du 1x.
+<br>
+<br>
+Un commentaire commence par // et se poursuit jusqu'à la fin de la ligne.
+<br>
+<br>
+Une partie de la partition peut être répétée quand elle est placée entre accolades { } et suivie du nombre de répétitions (chiffre entre 0 et 9 ou entre A et Z soit au maximum 36 fois).
+<br>
+La répétition est interdite à l'intérieur d'un multiplex ou à l'intérieur d'un lancer synchro.
+<br>
+<br>
+Un lancer synchro suivi du signe % est répété en latéralisation inversée. (pour un groupe de lancers: à venir)
+<br>
+Exemple: (3,-)% = (3,-)(-,3)
+<br>
+<br>
+Directives
+<br>
+<br>
+#tempo suivi du tempo qui sera repris par un futur animateur 3D.
+(à venir: changement de tempo en cours de partition)
+<br>
+<br>
+<!-- zone-> ac ou al ou bol ou opac ou opal
+<br>
+position de lancer -> throw(nombre,nombre,nombre)
+<br>
+position d'attrape -> catch(nombre,nombre,nombre)
+<br>
+<br>
+<br>
+
+ -->
+<br>
+<br>
+ 
+<h3>Validité</h3>
+<br>
+<br>
+Une partition est valide si à chaque temps et dans chaque main, le nombre d'objets lancés est égal au nombre d'objets attrapés.<br>
+
+En conséquence la moyenne de la phrase (total des lancers / nombre de temps) est entière et correspond au nombre d'objets.
+<br>
+Un lancer 1x empêche l'alternance des mains.
+<br>
+La présence de lancers synchros ou d'extensions x fait basculer l'analyse de mode "alterné pur" à "complexe". Il faut alors tenir compte de du rôle de chaque main à chaque temps (pas d'alternance sous-entendue en cas de période impaire).
+<br>
+<br>
+<br>
+<br>
+</article>
+
+<article class="popup" id="help-eng" onclick="hide(this.id)">
+<h2>User Guide</h2>
+<br>
+<br>
+<h3>Grammar of "French Siteswap"</h3>
+<br>
+<br>
+A siteswap score is composed of a unique phrase or a list of phrases.<br>
+<br>
+Each phrase of a list is written between < and >.<br>
+<br>
+A phrase can be a solo phrase or a group phrase (for several jugglers).<br>
+<br>
+A group phrase is a list of solo phrases separated by | . In a group phrase, each solo phrase must have the same length. The length os determined by the first solo phrase.
+<br>
+<br>
+A solo phrase is a list of throws.<br>
+<br>
+A throw can be unilateral (one hand at a time) or synchro (two unilateral throws at the same time, one on left and one on right).<br>
+<br>
+A unilateral throw can be simple (one object only) or multiplex (several objects).<br>
+<br>
+A synchro throw is composed of two unilateral throws, between brackets and separated by a comma (i.e. ( , ) ). <br>
+Attention : for now synchro throws mean MHN throws, i.e. they take only one beat, opposed to classic synchro throw that take two beats. Updates expected in future versions.<br>
+<br>
+A multiplex throw is a list of siple throws between square brackets [ ], and can be followed by an extension that affects all the simple throws inside the multiplex.<br>
+<br>
+A simple throw is composed of a height that can be followed by an extension.<br>
+<br>
+A height is a number represented by a digit (from 0 to 9) of by an uppercase letter (from A to Z) for number above 9 (A=10, B=11 etc). In a synchro throw, a 0 can be replaced by a dash - (dwell) to explicit that the hand has just caught an object. This object will be thrown again in the next beat.<br>
+<br>
+An extension is composed of one or several elementary extensions:<br>
+<blockquote>
+- x (cross) for the destination inverser<br>
+- b (bounce)<br>
+- t (throw) (only for 2)<br>
+- f (floor)<br>
+- r (roll)<br>
+- h (hit)<br>
+- c (contact)<br>
+- i (inside)
+- o (outside)
+- p (pass) for a pass to the next juggler<br>
+- q for a pass to the previous juggler<br>
+- : followed by the index of destination juggler (expected in future versions)<br>
+- a bodyzone expression, i.e. an even number of elements chosen among these : ac, al, opac, opal, bol.<br>
+- a throwing position (expected in future versions)<br>
+- a catching position (expected in future versions)<br>
+- a position and orientation of the juggler on stage (expected in future versions)
+</blockquote>
+<br>
+A score begins by the right hand, unless it begins by a synchro throw. (Startleft expected in future versions)<br>
+A 1x throw followed by a unilateral throw implies that the unilateral throw is made by the same hand that does the 1x.
+<br>
+<br>
+A comment begins by a double slash // and continues until the end of the line.
+<br>
+<br>
+A part of a score can be repeated when placed between curly brackets { } and followed by the number of repetitions (number between 0 and 9 or between A and Z i.e. 36 times at most).
+<br>
+Repetition is forbidden inside a multiplex or synchro throw.
+<br>
+<br>
+A synchro throw followed by a percent sign % is repeated in inverse laterality. (for a group of throws : expected in future versions)
+<br>
+Example: (3,-)% = (3,-)(-,3)
+<br>
+<br>
+Directives
+<br>
+<br>
+#tempo followed by a multi-digit number (typically between 50 and 200) determines the speed of the animation in throws per minute.
+(expected in future versions : tempo change at any point in the score)
+<br>
+<br>
+<!-- zone-> ac ou al ou bol ou opac ou opal
+<br>
+position de lancer -> throw(nombre,nombre,nombre)
+<br>
+position d'attrape -> catch(nombre,nombre,nombre)
+<br>
+<br>
+<br>
+
+ -->
+<br>
+<br>
+ 
+<h3>Validity</h3>
+<br>
+<br>
+A score is called valid if at each beat and for each hand, the number of throws equals the number of landings.<br>
+As a consequence the average of the score (total of throws / number of beats) is a round number and corresponds to the number of objects.
+<br>
+A 1x throw prevents alternating hands.
+<br>
+Presence of synchro throws or x extensions makes the score be parsed from "pure alternate" to "complex". You must then take in account the part of each hand at each beat (no underlying hand change with odd period).
+<br>
+<br>
+<br>
+<br>
+</article>
+
+<div class="popup" id="credits" onclick="hide(this.id)">
+<h3>Credits</h3>
+<br>
+<br>
+<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_blank" id="form_paypal">
+<input type="hidden" name="cmd" value="_s-xclick">
+<input type="hidden" name="encrypted" value="-----BEGIN PKCS7-----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-----END PKCS7-----
+">
+</form>
+<div class="paypal" onclick="document.getElementById('form_paypal').submit()">
+<br>
+<a href="javascript:void(0)" onclick="document.getElementById('form_paypal').submit()">Support & Contribute with PayPal</a>
+<br>
+If you use and like Swapit or not, remember it's a big amount of work. You can thank the programmers and help them to improve this software by making a donation via PayPal by clicking this text. 
+<br>
+Thank you very much !
+<br>
+<br>
+</div>
+<br><br>
+<br><br>
+Programming : Denis Paumier<br>
+<br>
+Les Objets Volants : 
+<a href="http://www.lesobjetsvolants.com" target="_blank">www.lesobjetsvolants.com</a>
+<br>
+<br>
+facebook : 
+<a href="http://www.facebook.com/swapit" target="_blank">swapit page</a>
+<br>
+<br>
+Thanks : Allen Knutson, who first came to me about siteswaps in 1996 ; Greg Kennedy, who did the same in 1998 ; Hans Gault for passing in Paris ; Christophe Prechac for Prechacs ; Maksim Komaro for "3b different ways" DVD ;  Vincent Bruel for bouncing in 2003-2004 ; Sylvain "Siteswap Police" Garnavault for his numerous works ; Jonathan Lardillier for pushing forward ; many others for all kinds of support.
+<br>
+<br>
+Siteswap artists :
+<a href="http://www.gandinijuggling.com" target="_blank">Gandini Juggling</a>
+<br>
+<br>
+Software & programming help :
+<br>
+<a href="https://notepad-plus-plus.org" target="_blank">Notepad++</a>
+<br>
+<a href="http://www.w3schools.com" target="_blank">W3Schools</a>
+<br>
+<br>
+Other juggling software :
+<br>
+<a href="http://www.koelnvention.de" target="_blank">JoePass!</a>
+<br>
+<a href="http://jugglinglab.sourceforge.net" target="_blank">JugglingLab</a>
+
+<br><br>
+<br><br>
+<br><br>
+</div>
+
+
+ </body>
+</html>

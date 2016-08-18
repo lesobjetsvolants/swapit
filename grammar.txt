@@ -1,0 +1,31 @@
+
+texte -> phrase ou liste de phrase_de_liste
+
+phrase_de_liste ->  < phrase >
+
+phrase -> phrase_solo ou phrase_multi
+ 
+phrase_multi -> phrase_solo | phrase_solo | ...
+
+phrase_solo -> liste de lancer
+
+lancer -> lancer_synchro ou lancer_unilatéral
+
+lancer_unilatéral -> lancer_multiplex ou lancer_simple
+
+lancer_synchro -> ( lancer_unilatéral , lancer_unilatéral )
+
+lancer_multiplex -> [ lancer_simple lancer_simple ... ]
+
+lancer_simple -> hauteur extension
+
+hauteur -> 0..9 avec inverseur de croisement ou X lancer indéterminé ou -
+
+extension -> liste de paires de zones + position de lancer + position d'attrape + position du jongleur sur scène + passe
+
+zone-> ac ou al ou bol ou opac ou opal x 2
+
+position de lancer -> throw(nombre,nombre,nombre)
+position d'attrape -> catch(nombre,nombre,nombre)
+
+passe -> p ou : + index ou nom du destinataire
