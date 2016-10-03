@@ -1,6 +1,56 @@
 
 "use strict";
 
+var colors=['#009900','#006600'];
+var color=0;
+// mysteriously didn't manage to make these variables 
+// properties of caret;
+// let them global instead
+var caret={
+		pos:0,
+		timer:null,
+		color:0,
+		change_color:function()
+		{
+			color=1-color;
+			if (document.getElementById('caret'))
+				document.getElementById('caret')
+								 .style.backgroundColor=colors[color];
+		},
+		blink:function()
+		{
+			clearTimeout(this.timer);
+			color=0;
+			if (document.getElementById('caret'))
+				document.getElementById('caret')
+								 .style.backgroundColor=colors[color];
+			this.timer=setInterval(this.change_color,500);
+		},
+		set:function()
+		{
+			if (this.pos>=0)
+			document.getElementById('highlight')
+							 .children[this.pos]
+							 .id='caret';
+			this.blink();
+		}
+};
+
+var style={
+	OK:'color:white',
+	ERROR:'color:red',
+	TAG:'color:#99CC99',
+	TOOMANYLANDINGS:'color:#FF6666;text-decoration:underline',
+	NOTENOUGHLANDINGS:'color:#CC9999;text-decoration:underline',
+	COMMENT:'color:#888888',
+	EXTENSION:'color:#9999FF',
+};
+
+var serialize={
+	FULL:					0b1111111,
+	NOEXTENSION:	0b0000010,
+};
+
 function QueryString()
 {
 	var t='';
@@ -19,11 +69,8 @@ function QueryString()
 
 function display(e)
 {
-	if (e=='help')
-		document.getElementById(e+'-'+localtext.lang)
-						 .style.visibility='visible';
-	else
-		document.getElementById(e).style.visibility='visible';
+	document.getElementById(e+'-'+localtext.lang)
+					 .style.visibility='visible';
 }
 
 function hide(e)

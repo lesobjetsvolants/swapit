@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html> 
+<!DOCTYPE html> 
 <html>
 <head>
 <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8">
@@ -8,6 +8,8 @@
 <script src="lang.js"></script>
 <script src="cookie.js"></script>
 <script src="datastructure.js"></script>
+<script src="juggler.js"></script>
+<script src="statediagrams.js"></script>
 <script src="include.js"></script>
 <script src="validate.js"></script>
 <script src="parse.js"></script>
@@ -31,7 +33,7 @@
 Swapit
 </h1>
 <span class="modifdate">
-Siteswap parser & validator version 2016.08.09
+Siteswap parser & validator version 2016.08.31
 </span>
 </td>
 <td class="rubriques_droite">
@@ -44,6 +46,7 @@ metronome
 <button onclick="localtext.change_lang('fr')">français</button>
 <button onclick="localtext.change_lang('eng')">english</button>
 <button onclick="display('help')">help</button>
+<button onclick="display('about')">about</button>
 <button onclick="display('credits')">credits</button>
 </td>
 </tr>
@@ -71,54 +74,16 @@ metronome
 <div class="debug" id="debug"></div>
 </td>
 </tr>
-<tr>
-<td><h3>Animator</h3></td>
-<td><h3>Generator</h3></td>
-</tr>
-<tr>
-<td>
-<div class="animator" id="animator">
-		<script src="three.min.js"></script>
-		<script src="animator.js"></script>
-</div>
-</td>
-<td>
-<div class="generator"id="generator">
-Nombre d'objets<br>
-Nombre de jongleurs<br>
-Période<br>
-Hauteur max<br>
-<br></div>
-</td>
-</tr>
-<tr>
-<td><h3>
-Library</h3>
-</td>
-<td>
-</td>
-</tr>
-<tr>
-<td>
-<select>
-<option>test <33p31|3133p></option>
-</select>
-</td>
-<td>
-</td>
-</tr>
 </table>
 <br>
 <br>
 
-<!-- <div class="test">
-
-<button onclick="document.getElementById('debug').innerHTML=dump(score);">dump</button>
-<audio id="mp3player" controls>
-<source src="Nintendude-exciting_minigame.mp3" type="audio/mpeg">
-</audio>
- -->
-
+<article class="popup" id="about-fr" onclick="hide(this.id)">
+Swapit est un éditeur de siteswap.
+</article>
+<article class="popup" id="about-eng" onclick="hide(this.id)">
+Swapit is a siteswap editor.
+</article>
 <article class="popup" id="help-fr" onclick="hide(this.id)">
 <h2>Mode d'emploi</h2>
 <br>
@@ -142,6 +107,8 @@ Un lancer peut être unilatéral (une seule main à la fois) ou synchro (deux la
 Un lancer unilatéral peut être simple (un seul objet) ou multiplex (plusieurs objets).<br>
 <br>
 Un lancer synchro est composé de deux lancers unilatéraux, entre parenthèses et séparés par une virgule. (attention : par lancer synchro, il est entendu plutôt lancer MHN, c'est-à-dire qu'un lancer synchro prend un seul temps, contrairement au siteswap synchro classique où les lancers prennent deux temps).<br>
+L'un des lancers ou les deux lancers unilatéraux du lancer synchro peuvent être omis. Si les deux lancers sont omis, on peut aussi omettre la virgule. Exemples : (3,) signifie (3,0) ou (3,-) ; (,) ou () signifient (0,0) ou (-,-).
+<br>
 <br>
 Un lancer multiplex est une liste de lancers simples entre crochets, pouvant être suivie d'une extension qui affecte tous les lancers simples à l'intérieur du multiplex.<br>
 <br>
@@ -244,10 +211,13 @@ A throw can be unilateral (one hand at a time) or synchro (two unilateral throws
 <br>
 A unilateral throw can be simple (one object only) or multiplex (several objects).<br>
 <br>
-A synchro throw is composed of two unilateral throws, between brackets and separated by a comma (i.e. ( , ) ). <br>
-Attention : for now synchro throws mean MHN throws, i.e. they take only one beat, opposed to classic synchro throw that take two beats. Updates expected in future versions.<br>
+A synchro throw is composed of two unilateral throws, between brackets and separated by a comma. Example : (4,3x).<br>
+
+It's possible to let one side or both sides of the comma empty. If both sides are empty you can also omit the comma. Examples : (3,) means (3,0) or (3,-) ; (,) and () mean (0,0).<br>
+Attention : for now synchro throws mean MHN throws, i.e. they take only one beat, opposed to classic synchro throws that take two beats. Updates expected in future versions.<br>
 <br>
-A multiplex throw is a list of siple throws between square brackets [ ], and can be followed by an extension that affects all the simple throws inside the multiplex.<br>
+<br>
+A multiplex throw is a list of simple throws between square brackets [ ], and can be followed by an extension that affects all the simple throws inside the multiplex.<br>
 <br>
 A simple throw is composed of a height that can be followed by an extension.<br>
 <br>
@@ -324,8 +294,63 @@ Presence of synchro throws or x extensions makes the score be parsed from "pure 
 <br>
 <br>
 </article>
+<div class="popup" id="credits-fr" onclick="hide(this.id)">
+<h3>Credits</h3>
+<br>
+<br>
+<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_blank" id="form_paypal">
+<input type="hidden" name="cmd" value="_s-xclick">
+<input type="hidden" name="encrypted" value="-----BEGIN PKCS7-----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-----END PKCS7-----
+">
+</form>
+<div class="paypal" onclick="document.getElementById('form_paypal').submit()">
+<br>
+<a href="javascript:void(0)" onclick="document.getElementById('form_paypal').submit()">Support & Contribute with PayPal</a>
+<br>
+If you use and like Swapit or not, remember it's a big amount of work. You can thank the programmers and help them to improve this software by making a donation via PayPal by clicking this text. 
+<br>
+Thank you very much !
+<br>
+<br>
+</div>
+<br><br>
+<br><br>
+Programming : Denis Paumier<br>
+<br>
+Les Objets Volants : 
+<a href="http://www.lesobjetsvolants.com" target="_blank">www.lesobjetsvolants.com</a>
+<br>
+<br>
+facebook : 
+<a href="http://www.facebook.com/swapit" target="_blank">swapit page</a>
+<br>
+<br>
+Thanks : Allen Knutson, who first came to me about siteswaps in 1996 ; Greg Kennedy, who did the same in 1998 ; Hans Gault for passing in Paris ; Christophe Prechac for Prechacs ; Maksim Komaro for "3b different ways" DVD ;  Vincent Bruel for bouncing in 2003-2004 ; Sylvain "Siteswap Police" Garnavault for his numerous works ; Jonathan Lardillier for pushing forward ; many others for all kinds of support.
+<br>
+<br>
+Siteswap artists :
+<a href="http://www.gandinijuggling.com" target="_blank">Gandini Juggling</a>
+<br>
+<br>
+Software & programming help :
+<br>
+<a href="https://notepad-plus-plus.org" target="_blank">Notepad++</a>
+<br>
+<a href="http://www.w3schools.com" target="_blank">W3Schools</a>
+<br>
+<br>
+Other juggling software :
+<br>
+<a href="http://www.koelnvention.de" target="_blank">JoePass!</a>
+<br>
+<a href="http://jugglinglab.sourceforge.net" target="_blank">JugglingLab</a>
 
-<div class="popup" id="credits" onclick="hide(this.id)">
+<br><br>
+<br><br>
+<br><br>
+</div>
+
+<div class="popup" id="credits-eng" onclick="hide(this.id)">
 <h3>Credits</h3>
 <br>
 <br>

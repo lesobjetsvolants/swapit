@@ -29,7 +29,8 @@ function validate()
           for (var thi in th)                  // throws
 					{
 						var hi=parseInt(th[thi].height);
-						if (!isNaN(hi)&&(hi!=0))
+						if (!isNaN(hi)&&(hi!=0)
+								|| ( (hi==0)&&(th[thi].crossingness=='x') )) // case of 0x
 						{
 							somme+=hi; // ----------somme
 							
@@ -170,7 +171,9 @@ function validate()
 							{
 								if ((onehand.thro[thi])
 									&&(onehand.thro[thi].height!=0)
-									&&(onehand.thro[thi].height!='-'))
+									&&(onehand.thro[thi].height!='-')
+									
+									|| ((onehand.thro[thi].height==0)&&(onehand.thro[thi].crossingness=='x'))) // cas du 0x
 									throws_number++;
 							}
 							if (onehand.landings)			// is there a landing
@@ -294,5 +297,6 @@ function validate()
 			
 	//---------------------------------------
 	debug_output('<br>');
-	debug_output('query string :',QueryString());
+	if (score.debug) 
+		debug_output('query string :',QueryString());
 };
