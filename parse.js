@@ -393,8 +393,8 @@ function parse(ev)
           error_output(localtext.error.sync.comma.inside_multiplex);
         else if (!sync_open)
           error_output(localtext.error.sync.not_open);
-        else if (sync_just_open)
-          error_output(localtext.error.sync.comma.sth_missing);
+        // else if (sync_just_open)
+          // error_output(localtext.error.sync.comma.sth_missing);
         else
         {
 					loop_just_closed=false;
@@ -411,10 +411,10 @@ function parse(ev)
           error_output(localtext.error.sync.closed_in_bad_place);
         else if (!sync_open)
           error_output(localtext.error.sync.not_closed);
-        else if (!comma_passed)
-          error_output(localtext.error.sync.comma.missing);
-        else if (sync_just_open)
-          error_output(localtext.error.sync.close_sth_missing);
+        // else if (!comma_passed)
+          // error_output(localtext.error.sync.comma.missing);
+        // else if (sync_just_open)
+          // error_output(localtext.error.sync.close_sth_missing);
         else
         {
 					dwell_hold=false;
@@ -626,6 +626,9 @@ function parse(ev)
 		score.total_beat_count=score.jugglers[1].current_beat;
 	if (score.current_juggler==1)
 		score.phrase_beat_count=score.phrase_current_beat;
+
+	//-------------------- dump score before validate-----------------
+	if (score.debug)   debug_output('<br>Score before validate : <br>',dump(score));
 
 	if (!score.error_detected&&(score.jugglers[1]!=null)
 					&&(score.jugglers[1].current_beat>0))
